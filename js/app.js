@@ -2,14 +2,25 @@
 
 const carrito = document.querySelector('#carrito');
 const contenedorCarrito = document.querySelector('#lista-carrito tbody');
-const vaciarCarrito = document.querySelector('#vaciar-carrito');
+const vaciarCarritoBtn = document.querySelector('#vaciar-carrito');
 const listaCursos = document.querySelector('#lista-cursos');
 let articulosCarrito =[];
 
 cargarEventListeners();
 function cargarEventListeners(){
+
     //Cuando agregas un curso presionando "Agregar al carrito"
     listaCursos.addEventListener('click', agregarCurso);
+
+    //elimina cursos del carrito
+    carrito.addEventListener('click', eliminarCurso);
+
+    //Vaciar el carrito 
+    vaciarCarritoBtn.addEventListener('click', () => {
+        articulosCarrito = []; //resetiamos el arreglo
+
+        limpiarHTML();
+    })
 }
 
 //FUNCIONES
@@ -19,6 +30,18 @@ function agregarCurso(e){
     if(e.target.classList.contains('agregar-carrito')){
         const cursoSeleccionado = e.target.parentElement.parentElement;
         leerDatosCurso(cursoSeleccionado);
+    }
+}
+
+//Eliminar  un curso del carrito
+function eliminarCurso(e){
+    if(e.target.classList.contains('borrar-curso')){
+        const cursoId = e.target.getAttribute('data-id');
+
+        //Elimina del arreglo de articulosCarritos por el data-id
+        articulosCarrito = articulosCarrito.filter( curso => curso.id !== cursoId);
+
+        carritoHTML(); // Iterar sobre el carrito y mostrar su HTML
     }
 }
 
@@ -42,11 +65,12 @@ function leerDatosCurso(curso){
         const cursos = articulosCarrito.map( curso =>{
             if(curso.id ===  infoCurso.id){
                 curso.cantidad++;
-                return curso;
+                return curso; // este retorna el objeto actualizado
             }else{
-                return curso;
+                return curso; // este retorna los objetos que no son los duplicados
             }
-        })
+        });
+        articulosCarrito = [...cursos];
     }else{
     //Agregar elementos al arreglo carrito
     articulosCarrito = [...articulosCarrito, infoCurso]
@@ -90,3 +114,5 @@ function limpiarHTML(){
         contenedorCarrito.removeChild(contenedorCarrito.firstChild);
     }
 }
+
+
